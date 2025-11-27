@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kraampje Audio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="player-container">
+
+    <!-- FOTO / FLYER -->
+    <img src="../images/A4 - 13.jpg" alt="Flyer" class="flyer">
+
+    <!-- AUDIO PLAYER -->
+    <div class="audio-player">
+
+        <!-- PLAY KNOP -->
+        <button id="playBtn" class="play-button">▶️</button>
+
+        <!-- SLIDER -->
+        <input type="range" id="progress" value="0" min="0" max="100">
+
+        <!-- TIJD -->
+        <div class="time">
+            <span id="current">00:00</span>
+            <span id="duration">00:00</span>
+        </div>
+
+    </div>
+
+    <!-- AUDIO -->
+    <audio id="audio" src="../mp3/Bara interview.mp3"></audio>
+
+</div>
+
+<script>
+    const audio = document.getElementById("audio");
+    const playBtn = document.getElementById("playBtn");
+    const progress = document.getElementById("progress");
+    const currentTimeEl = document.getElementById("current");
+    const durationEl = document.getElementById("duration");
+
+    // FORMAT TIJD ALS 01:09
+    function formatTime(sec) {
+        const m = Math.floor(sec / 60);
+        const s = Math.floor(sec % 60);
+        return `${m}:${s < 10 ? "0" + s : s}`;
+    }
+
+    // PLAY/PAUSE BUTTON
+    playBtn.onclick = () => {
+        if (audio.paused) {
+            audio.play();
+            playBtn.textContent = "⏸️";
+            playBtn.classList.add("pulse");
+        } else {
+            audio.pause();
+            playBtn.textContent = "▶️";
+            playBtn.classList.remove("pulse");
+        }
+    };
+
+    // ZET DUUR WANNEER AUDIO LOAD
+    audio.onloadedmetadata = () => {
+        durationEl.textContent = formatTime(audio.duration);
+    };
+
+    // UPDATE SLIDER EN TIJD TIJDENS AFSPELEN
+    audio.ontimeupdate = () => {
+        progress.value = (audio.currentTime / audio.duration) * 100;
+        currentTimeEl.textContent = formatTime(audio.currentTime);
+    };
+
+    // SCHUIF FUNCTIE
+    progress.oninput = () => {
+        audio.currentTime = (progress.value / 100) * audio.duration;
+    };
+</script>
+
+</body>
+</html>
+
+
